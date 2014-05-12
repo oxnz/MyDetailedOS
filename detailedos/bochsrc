@@ -15,12 +15,12 @@ vgaromimage: file=$BXSHARE/VGABIOS-elpin-2.40
 # adventage： if I recompile a higher version , I only need to revise BXSHARE in the /etc/profile
 
 # what disk images will be used 
-floppya: 1_44="/home/mudongliang/system/startos/a.img", status=inserted
+floppya: 1_44="/home/mudongliang/system/detailedos/a.img", status=inserted
 
 # hard disk
 #ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
 #ata0-master: type=disk, path="hd10meg.img", cylinders=306, heads=4, spt=17
-#ata0-master: type=disk, path="/home/mudongliang/system/startos/80m.img", mode=flat, cylinders=162, heads=16, spt=63
+#ata0-master: type=disk, path="/home/mudongliang/system/detailedos/80m.img", mode=flat, cylinders=162, heads=16, spt=63
 # choose the boot disk.
 #boot: floppy
 boot: a
@@ -33,7 +33,7 @@ boot: a
 # other choices: win32 sdl wx carbon amigaos beos macintosh nogui rfb term svga 
 
 # where do we send log messages?
-log: /home/mudongliang/system/startos/bochsout
+log: /home/mudongliang/system/detailedos/bochsout
 
 # disable the mouse, since DLX is text only
 mouse: enabled=0
