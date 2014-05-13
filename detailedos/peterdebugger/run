@@ -1,0 +1,3 @@
+#!/bin/bash
+
+java -jar peter*.jar bochs -f /home/mudongliang/system/detailedos/bochsrc
