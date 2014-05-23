@@ -1,14 +1,15 @@
 #######################################
 # Makefile for MyDetailedOS #
 ######################################
-
+# It must have the same value with 'KRNL_ENT_PT_PHY_ADDR' in load.inc!
+ENTRYPOINT	= 0x30400
 # Programs, flags, etc.
 ASM		= nasm
 #DASM		= ndisasm
 #CC		= gcc
 LD		= ld
 ASMKFLAGS	= -f elf
-LDFLAGS		= -s
+LDFLAGS		= -s -Ttext $(ENTRYPOINT)
 
 # This Program
 ORANGESBOOT		= boot.bin loader.bin

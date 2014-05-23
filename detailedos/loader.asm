@@ -34,8 +34,6 @@ SelectorVideo		equ	LABEL_DESC_VIDEO	- LABEL_GDT + SA_RPL3
 
 ;======================================================================================================
 BaseOfStack			equ	  0100h
-PageDirBase			equ	100000h	; 页目录开始地址: 1M
-PageTblBase			equ	101000h	; 页表开始地址:   1M + 4K
 ;======================================================================================================	
 
 LABEL_START:
@@ -405,8 +403,14 @@ LABEL_PM_START:
 	mov	ah, 0Fh				; 0000: 黑底    1111: 白字
 	mov	al, 'P'
 	mov	[gs:((80 * 0 + 39) * 2)], ax	; 屏幕第 0 行, 第 39 列。
-	jmp	$
 
+	call	InitKernel
+
+	;jmp	$
+
+	;********************************************************************************
+	jmp	SelectorFlatC:KernelEntryPointPhyAddr	; 正式进入内核*
+	;********************************************************************************
 ; ------------------------------------------------------------------------
 ; 显示 AL 中的数字
 ; ------------------------------------------------------------------------
@@ -674,8 +678,35 @@ SetupPaging:
 	ret
 ; 分页机制启动完毕 ----------------------------------------------------------
 
+; InitKernel 
+; 将 KERNEL.BIN 的内容经过整理对齐后放到新的位置
+; 遍历每一个 Program Header，根据 Program Header 中的信息来确定把什么放进内存，放到什么位置，以及放多少。
+InitKernel:
+        xor   esi, esi
+        mov   cx, word [BaseOfKernelPhyAddr+2Ch];`. ecx <- pELFHdr->e_phnum
+        movzx ecx, cx                               ;/
+        mov   esi, [BaseOfKernelPhyAddr + 1Ch]  ; esi <- pELFHdr->e_phoff
+        add   esi, BaseOfKernelPhyAddr	;esi<-OffsetOfKernel+pELFHdr->e_phoff
+.Begin:
+        mov   eax, [esi + 0]
+        cmp   eax, 0                      ; PT_NULL
+        jz    .NoAction
+        push  dword [esi + 010h]    ;size ;
+        mov   eax, [esi + 04h]            ; |
+        add   eax, BaseOfKernelPhyAddr; | memcpy((void*)(pPHdr->p_vaddr),
+        push  eax		    		;src  ; |      uchCode + pPHdr->p_offset,
+        push  dword [esi + 08h]     ;dst  ; |      pPHdr->p_filesz;
+        call  MemCpy                      ; |
+        add   esp, 12                     ;
+.NoAction:
+        add   esi, 020h                   ; esi += pELFHdr->e_phentsize
+        dec   ecx
+        jnz   .Begin
 
-; SECTION .data1 之开始 ---------------------------------------------------------------------------------------------
+        ret
+; InitKernel
+
+; SECTION .data1 之开始 
 [SECTION .data1]
 
 ALIGN	32
