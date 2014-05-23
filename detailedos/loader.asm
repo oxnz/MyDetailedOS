@@ -140,7 +140,7 @@ LABEL_GOTO_NEXT_SECTOR_IN_ROOT_DIR:
 
 LABEL_NO_KERNELELF:
 	mov	dh, 2			; "No KERNEL."
-	call	DispStr		; 打印字符串
+	call	DispStrRealMode	; 打印字符串
 	jmp	$			; 没有找到 KERNEL.ELF, 死循环在这里
 LABEL_FILENAME_FOUND:		; 找到 KERNEL.ELF 后便来到这里继续
 	mov	ax, RootDirSectors
@@ -226,7 +226,7 @@ bOdd				db	0		; 奇数还是偶数
 dwKernelSize		dd	0		; KERNEL.ELF 文件大小
 
 ;字符串
-KernelFileName		db	"KERNEL  BIN", 0  ; KERNEL.ELF 之文件名
+KernelFileName		db	"KERNEL  ELF", 0  ; KERNEL.ELF 之文件名
 ; 为简化代码, 下面每个字符串的长度均为 MessageLength
 MessageLength		equ	9
 BootMessage:		db	"Loading  " 	; 9字节, 不够则用空格补齐. 序号 0
