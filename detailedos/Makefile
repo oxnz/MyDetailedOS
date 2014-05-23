@@ -3,18 +3,20 @@
 ######################################
 # It must have the same value with 'KRNL_ENT_PT_PHY_ADDR' in load.inc!
 ENTRYPOINT	= 0x30400
+
 # Programs, flags, etc.
 ASM		= nasm
 #DASM		= ndisasm
-#CC		= gcc
+CC		= gcc
 LD		= ld
 ASMKFLAGS	= -f elf
-LDFLAGS		= -s -Ttext $(ENTRYPOINT)
+CFLAGS	= -c -Wall
+LDFLAGS	= -s -Ttext $(ENTRYPOINT)
 
 # This Program
 ORANGESBOOT		= boot.bin loader.bin
 ORANGESKERNEL	= kernel.elf
-OBJS			= kernel.o
+OBJS			= kernel.o start.o string.o kliba.o
 # All Phony Targets
 .PHONY : everything final image clean realclean disasm all buildimg
 
@@ -42,4 +44,13 @@ kernel.o : kernel.asm
 	$(ASM) $(ASMKFLAGS) -o $@ $<
 $(ORANGESKERNEL) : $(OBJS)
 	$(LD) $(LDFLAGS) -o $(ORANGESKERNEL) $^
+start.o : start.c
+	$(CC) $(CFLAGS) -o $@ $<
+string.o : string.asm
+	$(ASM) $(ASMKFLAGS) -o $@ $<
+kliba.o : kliba.asm
+	$(ASM) $(ASMKFLAGS) -o $@ $<
+
+
+
 

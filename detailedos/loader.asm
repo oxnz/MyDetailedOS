@@ -400,14 +400,12 @@ LABEL_PM_START:
 	call	DispMemInfo
 	call	SetupPaging
 
-	mov	ah, 0Fh				; 0000: 黑底    1111: 白字
-	mov	al, 'P'
-	mov	[gs:((80 * 0 + 39) * 2)], ax	; 屏幕第 0 行, 第 39 列。
-
-	call	InitKernel
-
+	;mov	ah, 0Fh				; 0000: 黑底    1111: 白字
+	;mov	al, 'P'
+	;mov	[gs:((80 * 0 + 39) * 2)], ax	; 屏幕第 0 行, 第 39 列。
 	;jmp	$
 
+	call	InitKernel
 	;********************************************************************************
 	jmp	SelectorFlatC:KernelEntryPointPhyAddr	; 正式进入内核*
 	;********************************************************************************
