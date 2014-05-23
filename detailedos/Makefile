@@ -9,14 +9,15 @@ ASM		= nasm
 #DASM		= ndisasm
 CC		= gcc
 LD		= ld
-ASMKFLAGS	= -f elf
-CFLAGS	= -c -Wall
-LDFLAGS	= -s -Ttext $(ENTRYPOINT)
+ASMBFLAGS	= -I boot/include/
+ASMKFLAGS	= -f elf -I include/
+CFLAGS	= -c -Wall -I include/
+LDFLAGS	= -s -Ttext $(ENTRYPOINT) -Map kernel.map
 
 # This Program
-ORANGESBOOT		= boot.bin loader.bin
-ORANGESKERNEL	= kernel.elf
-OBJS			= kernel.o start.o string.o kliba.o
+ORANGESBOOT		= boot/boot.bin boot/loader.bin
+ORANGESKERNEL	= kernel/kernel.elf
+OBJS			= kernel/kernel.o kernel/start.o lib/string.o lib/kliba.o
 # All Phony Targets
 .PHONY : everything final image clean realclean disasm all buildimg
 
@@ -31,24 +32,24 @@ realclean :
 	rm -f $(ORANGESBOOT) $(ORANGESKERNEL) *.o
 # We assume that "a.img" exists in current folder
 buildimg :
-	dd if=boot.bin of=a.img bs=512 count=1 conv=notrunc
+	dd if=boot/boot.bin of=a.img bs=512 count=1 conv=notrunc
 	sudo mount -o loop a.img /mnt/floppy/
-	sudo cp -fv loader.bin /mnt/floppy/
-	sudo cp -fv kernel.elf /mnt/floppy
+	sudo cp -fv boot/loader.bin /mnt/floppy/
+	sudo cp -fv kernel/kernel.elf /mnt/floppy
 	sudo umount /mnt/floppy
-boot.bin : boot.asm
-	$(ASM) -o $@ $<
-loader.bin : loader.asm
-	$(ASM) -o $@ $<
-kernel.o : kernel.asm
+boot/boot.bin : boot/boot.asm
+	$(ASM) $(ASMBFLAGS) -o $@ $<
+boot/loader.bin : boot/loader.asm
+	$(ASM) $(ASMBFLAGS) -o $@ $<
+kernel/kernel.o : kernel/kernel.asm
 	$(ASM) $(ASMKFLAGS) -o $@ $<
 $(ORANGESKERNEL) : $(OBJS)
 	$(LD) $(LDFLAGS) -o $(ORANGESKERNEL) $^
-start.o : start.c
+kernel/start.o : kernel/start.c
 	$(CC) $(CFLAGS) -o $@ $<
-string.o : string.asm
+lib/string.o : lib/string.asm
 	$(ASM) $(ASMKFLAGS) -o $@ $<
-kliba.o : kliba.asm
+lib/kliba.o : lib/kliba.asm
 	$(ASM) $(ASMKFLAGS) -o $@ $<
 
 
