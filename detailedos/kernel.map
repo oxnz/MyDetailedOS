@@ -100,62 +100,81 @@ LOAD lib/klib.o
  *(.iplt)
  .iplt          0x0000000000000000        0x0 kernel/kernel.o
 
-.text           0x0000000000030400      0x7d7
+.text           0x0000000000030400      0xc47
  *(.text.unlikely .text.*_unlikely)
  *(.text .stub .text.* .gnu.linkonce.t.*)
- .text          0x0000000000030400      0x10f kernel/kernel.o
+ .text          0x0000000000030400      0x30f kernel/kernel.o
                 0x0000000000030400                _start
-                0x0000000000030431                divide_error
-                0x0000000000030440                single_step_exception
-                0x000000000003044f                nmi
-                0x000000000003045e                breakpoint_exception
-                0x000000000003046d                overflow
-                0x000000000003047c                bounds_check
-                0x000000000003048b                inval_opcode
-                0x000000000003049a                copr_not_available
-                0x00000000000304a9                double_fault
-                0x00000000000304b3                copr_seg_overrun
-                0x00000000000304c2                inval_tss
-                0x00000000000304cc                segment_not_present
-                0x00000000000304d6                stack_exception
-                0x00000000000304e0                general_protection
-                0x00000000000304ea                page_fault
-                0x00000000000304f4                copr_error
- *fill*         0x000000000003050f        0x1 90909090
- .text          0x0000000000030510       0x82 kernel/start.o
-                0x0000000000030510                cstart
- *fill*         0x0000000000030592        0x2 90909090
- .text          0x0000000000030594       0xd0 kernel/i8259.o
-                0x0000000000030594                init_8259A
- .text          0x0000000000030664        0x0 kernel/global.o
- .text          0x0000000000030664      0x3da kernel/protect.o
-                0x0000000000030664                init_prot
-                0x0000000000030921                exception_handler
- *fill*         0x0000000000030a3e        0x2 90909090
- .text          0x0000000000030a40       0x1a lib/string.o
-                0x0000000000030a40                memcpy
- *fill*         0x0000000000030a5a        0x6 90909090
- .text          0x0000000000030a60       0xa8 lib/kliba.o
-                0x0000000000030a60                disp_str
-                0x0000000000030aa7                disp_color_str
-                0x0000000000030aef                out_byte
-                0x0000000000030afc                in_byte
- .text          0x0000000000030b08       0xcf lib/klib.o
-                0x0000000000030b08                itoa
-                0x0000000000030bb2                disp_int
+                0x0000000000030440                hwint00
+                0x0000000000030460                hwint01
+                0x0000000000030480                hwint02
+                0x00000000000304a0                hwint03
+                0x00000000000304c0                hwint04
+                0x00000000000304e0                hwint05
+                0x0000000000030500                hwint06
+                0x0000000000030520                hwint07
+                0x0000000000030540                hwint08
+                0x0000000000030560                hwint09
+                0x0000000000030580                hwint10
+                0x00000000000305a0                hwint11
+                0x00000000000305c0                hwint12
+                0x00000000000305e0                hwint13
+                0x0000000000030600                hwint14
+                0x0000000000030620                hwint15
+                0x0000000000030631                divide_error
+                0x0000000000030640                single_step_exception
+                0x000000000003064f                nmi
+                0x000000000003065e                breakpoint_exception
+                0x000000000003066d                overflow
+                0x000000000003067c                bounds_check
+                0x000000000003068b                inval_opcode
+                0x000000000003069a                copr_not_available
+                0x00000000000306a9                double_fault
+                0x00000000000306b3                copr_seg_overrun
+                0x00000000000306c2                inval_tss
+                0x00000000000306cc                segment_not_present
+                0x00000000000306d6                stack_exception
+                0x00000000000306e0                general_protection
+                0x00000000000306ea                page_fault
+                0x00000000000306f4                copr_error
+ *fill*         0x000000000003070f        0x1 90909090
+ .text          0x0000000000030710       0x82 kernel/start.o
+                0x0000000000030710                cstart
+ *fill*         0x0000000000030792        0x2 90909090
+ .text          0x0000000000030794       0xfb kernel/i8259.o
+                0x0000000000030794                init_8259A
+                0x0000000000030864                spurious_irq
+ *fill*         0x000000000003088f        0x1 90909090
+ .text          0x0000000000030890        0x0 kernel/global.o
+ .text          0x0000000000030890      0x61a kernel/protect.o
+                0x0000000000030890                init_prot
+                0x0000000000030d8d                exception_handler
+ *fill*         0x0000000000030eaa        0x6 90909090
+ .text          0x0000000000030eb0       0x1a lib/string.o
+                0x0000000000030eb0                memcpy
+ *fill*         0x0000000000030eca        0x6 90909090
+ .text          0x0000000000030ed0       0xa8 lib/kliba.o
+                0x0000000000030ed0                disp_str
+                0x0000000000030f17                disp_color_str
+                0x0000000000030f5f                out_byte
+                0x0000000000030f6c                in_byte
+ .text          0x0000000000030f78       0xcf lib/klib.o
+                0x0000000000030f78                itoa
+                0x0000000000031022                disp_int
  *(.gnu.warning)
 
 .fini
  *(.fini)
-                0x0000000000030bd7                PROVIDE (__etext, .)
-                0x0000000000030bd7                PROVIDE (_etext, .)
-                0x0000000000030bd7                PROVIDE (etext, .)
+                0x0000000000031047                PROVIDE (__etext, .)
+                0x0000000000031047                PROVIDE (_etext, .)
+                0x0000000000031047                PROVIDE (etext, .)
 
-.rodata         0x0000000000030be0      0x2d0
+.rodata         0x0000000000031060      0x2d0
  *(.rodata .rodata.* .gnu.linkonce.r.*)
- .rodata        0x0000000000030be0       0x2d kernel/start.o
- *fill*         0x0000000000030c0d       0x13 00
- .rodata        0x0000000000030c20      0x290 kernel/protect.o
+ .rodata        0x0000000000031060       0x2d kernel/start.o
+ .rodata        0x000000000003108d       0x11 kernel/i8259.o
+ *fill*         0x000000000003109e        0x2 00
+ .rodata        0x00000000000310a0      0x290 kernel/protect.o
 
 .rodata1
  *(.rodata1)
@@ -168,8 +187,8 @@ LOAD lib/klib.o
 
 .gcc_except_table
  *(.gcc_except_table .gcc_except_table.*)
-                0x0000000000030eb0                . = (ALIGN (0x1000) - ((0x1000 - .) & 0xfff))
-                0x0000000000031000                . = (0x1000 DATA_SEGMENT_ALIGN 0x1000)
+                0x0000000000031330                . = (ALIGN (0x1000) - ((0x1000 - .) & 0xfff))
+                0x0000000000032330                . = (0x1000 DATA_SEGMENT_ALIGN 0x1000)
 
 .eh_frame
  *(.eh_frame)
@@ -184,22 +203,22 @@ LOAD lib/klib.o
  *(.tbss .tbss.* .gnu.linkonce.tb.*)
  *(.tcommon)
 
-.preinit_array  0x0000000000031000        0x0
-                0x0000000000031000                PROVIDE (__preinit_array_start, .)
+.preinit_array  0x0000000000032330        0x0
+                0x0000000000032330                PROVIDE (__preinit_array_start, .)
  *(.preinit_array)
-                0x0000000000031000                PROVIDE (__preinit_array_end, .)
+                0x0000000000032330                PROVIDE (__preinit_array_end, .)
 
-.init_array     0x0000000000031000        0x0
-                0x0000000000031000                PROVIDE (__init_array_start, .)
+.init_array     0x0000000000032330        0x0
+                0x0000000000032330                PROVIDE (__init_array_start, .)
  *(SORT(.init_array.*))
  *(.init_array)
-                0x0000000000031000                PROVIDE (__init_array_end, .)
+                0x0000000000032330                PROVIDE (__init_array_end, .)
 
-.fini_array     0x0000000000031000        0x0
-                0x0000000000031000                PROVIDE (__fini_array_start, .)
+.fini_array     0x0000000000032330        0x0
+                0x0000000000032330                PROVIDE (__fini_array_start, .)
  *(.fini_array)
  *(SORT(.fini_array.*))
-                0x0000000000031000                PROVIDE (__fini_array_end, .)
+                0x0000000000032330                PROVIDE (__fini_array_end, .)
 
 .ctors
  *crtbegin.o(.ctors)
@@ -228,63 +247,63 @@ LOAD lib/klib.o
 .got
  *(.got)
  *(.igot)
-                0x0000000000031000                . = (. DATA_SEGMENT_RELRO_END 0xc)
+                0x0000000000032330                . = (. DATA_SEGMENT_RELRO_END 0xc)
 
-.got.plt        0x0000000000031000        0x0
+.got.plt        0x0000000000032330        0x0
  *(.got.plt)
  *(.igot.plt)
  .igot.plt      0x0000000000000000        0x0 kernel/kernel.o
 
-.data           0x0000000000031000        0x0
+.data           0x0000000000032330        0x0
  *(.data .data.* .gnu.linkonce.d.*)
- .data          0x0000000000031000        0x0 kernel/start.o
- .data          0x0000000000031000        0x0 kernel/i8259.o
- .data          0x0000000000031000        0x0 kernel/global.o
- .data          0x0000000000031000        0x0 kernel/protect.o
- .data          0x0000000000031000        0x0 lib/klib.o
+ .data          0x0000000000032330        0x0 kernel/start.o
+ .data          0x0000000000032330        0x0 kernel/i8259.o
+ .data          0x0000000000032330        0x0 kernel/global.o
+ .data          0x0000000000032330        0x0 kernel/protect.o
+ .data          0x0000000000032330        0x0 lib/klib.o
 
 .data1
  *(.data1)
 
-.sharable_data  0x0000000000031000        0x0
-                0x0000000000031000                PROVIDE (__sharable_data_start, .)
+.sharable_data  0x0000000000033000        0x0
+                0x0000000000033000                PROVIDE (__sharable_data_start, .)
  *(.sharable_data .sharable_data.* .gnu.linkonce.shrd.*)
-                0x0000000000031000                . = ALIGN ((. != 0x0)?0x1000:0x1)
-                0x0000000000031000                PROVIDE (__sharable_data_end, .)
-                0x0000000000031000                _edata = .
-                0x0000000000031000                PROVIDE (edata, .)
-                0x0000000000031000                __bss_start = .
+                0x0000000000033000                . = ALIGN ((. != 0x0)?0x1000:0x1)
+                0x0000000000033000                PROVIDE (__sharable_data_end, .)
+                0x0000000000033000                _edata = .
+                0x0000000000033000                PROVIDE (edata, .)
+                0x0000000000033000                __bss_start = .
 
-.bss            0x0000000000031000     0x1440
+.bss            0x0000000000032340     0x1440
  *(.dynbss)
  *(.bss .bss.* .gnu.linkonce.b.*)
- .bss           0x0000000000031000      0x800 kernel/kernel.o
- .bss           0x0000000000031800        0x0 kernel/start.o
- .bss           0x0000000000031800        0x0 kernel/i8259.o
- .bss           0x0000000000031800        0x0 kernel/global.o
- .bss           0x0000000000031800        0x0 kernel/protect.o
- .bss           0x0000000000031800        0x0 lib/klib.o
+ .bss           0x0000000000032340      0x800 kernel/kernel.o
+ .bss           0x0000000000032b40        0x0 kernel/start.o
+ .bss           0x0000000000032b40        0x0 kernel/i8259.o
+ .bss           0x0000000000032b40        0x0 kernel/global.o
+ .bss           0x0000000000032b40        0x0 kernel/protect.o
+ .bss           0x0000000000032b40        0x0 lib/klib.o
  *(COMMON)
- COMMON         0x0000000000031800      0xc40 kernel/global.o
-                0x0000000000031800                idt_ptr
-                0x0000000000031820                gdt
-                0x0000000000031c20                disp_pos
-                0x0000000000031c24                gdt_ptr
-                0x0000000000031c40                idt
-                0x0000000000032440                . = ALIGN ((. != 0x0)?0x4:0x1)
+ COMMON         0x0000000000032b40      0xc40 kernel/global.o
+                0x0000000000032b40                idt_ptr
+                0x0000000000032b60                gdt
+                0x0000000000032f60                disp_pos
+                0x0000000000032f64                gdt_ptr
+                0x0000000000032f80                idt
+                0x0000000000033780                . = ALIGN ((. != 0x0)?0x4:0x1)
 
-.sharable_bss   0x0000000000033000        0x0
-                0x0000000000033000                PROVIDE (__sharable_bss_start, .)
+.sharable_bss   0x0000000000034000        0x0
+                0x0000000000034000                PROVIDE (__sharable_bss_start, .)
  *(.dynsharablebss)
  *(.sharable_bss .sharable_bss.* .gnu.linkonce.shrb.*)
  *(SHARABLE_COMMON)
-                0x0000000000033000                . = ALIGN ((. != 0x0)?0x1000:0x1)
-                0x0000000000033000                PROVIDE (__sharable_bss_end, .)
-                0x0000000000033000                . = ALIGN (0x4)
-                0x0000000000033000                . = ALIGN (0x4)
-                0x0000000000033000                _end = .
-                0x0000000000033000                PROVIDE (end, .)
-                0x0000000000033000                . = DATA_SEGMENT_END (.)
+                0x0000000000034000                . = ALIGN ((. != 0x0)?0x1000:0x1)
+                0x0000000000034000                PROVIDE (__sharable_bss_end, .)
+                0x0000000000034000                . = ALIGN (0x4)
+                0x0000000000034000                . = ALIGN (0x4)
+                0x0000000000034000                _end = .
+                0x0000000000034000                PROVIDE (end, .)
+                0x0000000000034000                . = DATA_SEGMENT_END (.)
 
 .stab
  *(.stab)
