@@ -120,7 +120,14 @@ csinit:
 
 ALIGN   16
 hwint00:                ; Interrupt routine for irq 0 (the clock).
-        iretd
+	  cmp byte [gs:0],'Z'
+	  jna .rebak
+	  mov byte [gs:0],'A'-1
+.rebak:
+	  inc byte [gs:0] ;A->Z->A
+	  mov al,EOI
+	  out INT_M_CTL,al     
+	  iretd
 
 ALIGN   16
 hwint01:                ; Interrupt routine for irq 1 (keyboard)
