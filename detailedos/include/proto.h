@@ -18,7 +18,13 @@ PUBLIC void	disp_color_str(char * info, int color);
 PUBLIC void	init_prot();
 /* i8259.c */
 PUBLIC void	init_8259A();
+PUBLIC u32 seg2phys(u16 seg);
 /* klib.c */
 PUBLIC void disp_int(int input);
-
+PUBLIC void delay(int time);
+/* kernel.asm */
+void restart();
+/* main.c */
+PUBLIC int kernel_main();
+void TestA();
 #endif

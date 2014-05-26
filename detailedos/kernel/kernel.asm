@@ -1,18 +1,23 @@
 ; 编译链接方法如下所示：
 ; $ nasm -f elf kernel.asm -o kernel.o
 ; $ ld -s kernel.o -o kernel.elf    #‘-s’选项意为“strip all”
-; 代码段选择子
-SELECTOR_KERNEL_CS	equ	8
+
+%include "sconst.inc"
 
 ; 导入函数
 extern	cstart
 extern	exception_handler
 extern	spurious_irq
+extern 	kernel_main
 
 ; 导入全局变量
 extern	gdt_ptr
 extern	idt_ptr
 extern	disp_pos
+extern	p_proc_ready
+extern	tss
+
+bits 32
 
 [SECTION .bss]
 StackSpace		resb	2 * 1024
@@ -21,6 +26,8 @@ StackTop:		; 栈顶
 [section .text]	; 代码在此
 
 global _start	; 导出 _start
+
+global restart	;导出restart,kernel_main中使用
 
 ;处理器本身要使用的异常和中断
 global	divide_error
@@ -85,14 +92,19 @@ _start:
 	lidt	[idt_ptr]
 	
 	jmp	SELECTOR_KERNEL_CS:csinit
-csinit:				; 这个跳转指令强制使用刚刚初始化的结构
+csinit:
+	xor	eax, eax
+	mov	ax, SELECTOR_TSS
+	ltr	ax
+				; 这个跳转指令强制使用刚刚初始化的结构
 	;ud2
 	;jmp 0x40:0
 	;push	0
 	;popfd	; Pop top of stack into EFLAGS
 	
-	sti
-	hlt
+	;sti
+	;hlt
+	jmp kernel_main
 
 ; 中断和异常 -- 异常
 
@@ -108,7 +120,7 @@ csinit:				; 这个跳转指令强制使用刚刚初始化的结构
 
 ALIGN   16
 hwint00:                ; Interrupt routine for irq 0 (the clock).
-        hwint_master    0
+        iretd
 
 ALIGN   16
 hwint01:                ; Interrupt routine for irq 1 (keyboard)
@@ -243,3 +255,24 @@ exception:
 	call	exception_handler
 	add	esp, 4*2	; 让栈顶指向 EIP，堆栈中从顶向下依次是：EIP、CS、EFLAGS
 	hlt
+
+; ====================================================================================
+;                          restart
+;			功能：加载进程及其ldt和sp
+; ====================================================================================
+restart:
+	mov	esp, [p_proc_ready]
+	lldt	[esp + P_LDT_SEL] 
+	lea	eax, [esp + P_STACKTOP]
+	mov	dword [tss + TSS3_S_SP0], eax
+
+	pop	gs
+	pop	fs
+	pop	es
+	pop	ds
+	popad
+
+	add	esp, 4
+
+	iretd
+
