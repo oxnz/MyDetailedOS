@@ -10,6 +10,7 @@ extern	exception_handler
 extern	spurious_irq
 extern 	kernel_main
 extern	disp_str
+extern 	delay
 
 ; 导入全局变量
 extern	gdt_ptr
@@ -17,6 +18,7 @@ extern	idt_ptr
 extern	disp_pos
 extern	p_proc_ready
 extern	tss
+extern 	k_reenter
 
 bits 32
 
@@ -135,20 +137,28 @@ hwint00:                ; Interrupt routine for irq 0 (the clock).
 	  mov ds,dx
 	  mov es,dx
 
-	  mov esp,StackTop	;切换到内核栈
-
-	  cmp byte [gs:0],'Z'
-	  jna .rebak
-	  mov byte [gs:0],'A'-1
-.rebak:
-	  inc byte [gs:0] ;A->Z->A
-
 	  mov al,EOI		;这两句保证我们的时钟中断可以
 	  out INT_M_CTL,al  	;连续执行，而不是像原来显示中只显示一次   
+
+	  mov esp,StackTop	;切换到内核栈
+
+	  sti
 
 	  push  clock_int_msg
 	  call  disp_str
 	  add	  esp, 4
+
+	  push  1
+	  call  delay
+	  add   esp,4
+
+	  cli
+	
+	  cmp byte [gs:0],'Z'
+	  jna .rebak
+	  mov byte [gs:0],'A'-1
+.rebak:
+	  inc byte [gs:0] ;A->Z->A	
 
 	  mov esp,[p_proc_ready]	;离开内核栈
 
