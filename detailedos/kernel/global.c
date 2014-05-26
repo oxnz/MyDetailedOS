@@ -17,3 +17,4 @@ PROCESS	  proc_table[NR_TASKS];
 char		task_stack[STACK_SIZE_TOTAL];
 TSS		  tss;
 PROCESS*	  p_proc_ready;
+int 		k_reenter;

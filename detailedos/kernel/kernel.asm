@@ -140,6 +140,10 @@ hwint00:                ; Interrupt routine for irq 0 (the clock).
 	  mov al,EOI		;这两句保证我们的时钟中断可以
 	  out INT_M_CTL,al  	;连续执行，而不是像原来显示中只显示一次   
 
+	  inc dword [k_reenter]
+	  cmp dword [k_reenter],0
+	  jne	.re_enter
+
 	  mov esp,StackTop	;切换到内核栈
 
 	  sti
@@ -148,23 +152,21 @@ hwint00:                ; Interrupt routine for irq 0 (the clock).
 	  call  disp_str
 	  add	  esp, 4
 
-	  push  1
-	  call  delay
-	  add   esp,4
-
 	  cli
 	
 	  cmp byte [gs:0],'Z'
 	  jna .rebak
 	  mov byte [gs:0],'A'-1
 .rebak:
-	  inc byte [gs:0] ;A->Z->A	
+	  inc byte [gs:0] ;A->Z->A
 
 	  mov esp,[p_proc_ready]	;离开内核栈
 
 	  lea eax,[esp+P_STACKTOP]
 	  mov dword [tss+TSS3_S_SP0],eax
 
+.re_enter:
+	  dec dword [k_reenter]
 	  pop gs
 	  pop fs
 	  pop es

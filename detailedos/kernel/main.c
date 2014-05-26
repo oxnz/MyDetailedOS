@@ -12,6 +12,9 @@
                             kernel_main
 			功能：内核正式开始运行进程。
  *======================================================================*/
+//引导判断中断重入的标志，因为这个变量在此处初始化。
+extern int k_reenter;
+
 PUBLIC int kernel_main()
 {
 	disp_str("----------kernel start----------\n");
@@ -34,6 +37,7 @@ PUBLIC int kernel_main()
 	p_proc->regs.esp= (u32) task_stack + STACK_SIZE_TOTAL;
 	p_proc->regs.eflags = 0x1202;	// IF=1, IOPL=1, bit 2 is always 1.
 
+	k_reenter 		= -1;
 	p_proc_ready	= proc_table;
 	restart();
 

@@ -4,6 +4,7 @@ Common symbol       size              file
 
 idt_ptr             0x6               kernel/global.o
 task_stack          0x8000            kernel/global.o
+k_reenter           0x4               kernel/global.o
 gdt                 0x400             kernel/global.o
 tss                 0x68              kernel/global.o
 disp_pos            0x4               kernel/global.o
@@ -159,10 +160,10 @@ LOAD lib/klib.o
                 0x0000000000030ea6                seg2phys
                 0x0000000000030f61                exception_handler
  *fill*         0x000000000003107e        0x2 90909090
- .text          0x0000000000031080      0x123 kernel/main.o
+ .text          0x0000000000031080      0x12d kernel/main.o
                 0x0000000000031080                kernel_main
-                0x0000000000031161                TestA
- *fill*         0x00000000000311a3        0xd 90909090
+                0x000000000003116b                TestA
+ *fill*         0x00000000000311ad        0x3 90909090
  .text          0x00000000000311b0       0x2f lib/string.o
                 0x00000000000311b0                memcpy
                 0x00000000000311ca                memset
@@ -293,7 +294,7 @@ LOAD lib/klib.o
                 0x0000000000033000                PROVIDE (edata, .)
                 0x0000000000033000                __bss_start = .
 
-.bss            0x00000000000326a0     0x9530
+.bss            0x00000000000326a0     0x9550
  *(.dynbss)
  *(.bss .bss.* .gnu.linkonce.b.*)
  .bss           0x00000000000326a0      0x800 kernel/kernel.o
@@ -304,17 +305,18 @@ LOAD lib/klib.o
  .bss           0x0000000000032ea0        0x0 kernel/main.o
  .bss           0x0000000000032ea0        0x0 lib/klib.o
  *(COMMON)
- COMMON         0x0000000000032ea0     0x8d30 kernel/global.o
+ COMMON         0x0000000000032ea0     0x8d50 kernel/global.o
                 0x0000000000032ea0                idt_ptr
                 0x0000000000032ec0                task_stack
-                0x000000000003aec0                gdt
-                0x000000000003b2c0                tss
-                0x000000000003b328                disp_pos
-                0x000000000003b32c                gdt_ptr
-                0x000000000003b340                idt
-                0x000000000003bb40                p_proc_ready
-                0x000000000003bb60                proc_table
-                0x000000000003bbd0                . = ALIGN ((. != 0x0)?0x4:0x1)
+                0x000000000003aec0                k_reenter
+                0x000000000003aee0                gdt
+                0x000000000003b2e0                tss
+                0x000000000003b348                disp_pos
+                0x000000000003b34c                gdt_ptr
+                0x000000000003b360                idt
+                0x000000000003bb60                p_proc_ready
+                0x000000000003bb80                proc_table
+                0x000000000003bbf0                . = ALIGN ((. != 0x0)?0x4:0x1)
 
 .sharable_bss   0x000000000003c000        0x0
                 0x000000000003c000                PROVIDE (__sharable_bss_start, .)
