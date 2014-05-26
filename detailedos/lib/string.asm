@@ -7,6 +7,7 @@
 
 ; 导出函数
 global	memcpy
+global	memset
 
 ; =========================================================================
 ; void* memcpy(void* es:pDest, void* ds:pSrc, int iSize);
@@ -34,4 +35,27 @@ memcpy:
 	pop ebp
 
 	ret 	; 函数结束，返回
-; memcpy 结束-------------------------------------------------------------
+; memcpy 结束
+
+; =========================================================================
+; void memset(void* p_dst, char ch, int size);
+; =========================================================================
+memset:
+	push ebp
+	mov ebp,esp
+
+	push edi
+	push ecx
+	mov edi,[ebp+8]		; Destination
+	mov eax,[ebp+12]		; Char to be put
+	mov ecx,[ebp+16]		; Counter
+	
+	cld
+	rep stosb
+	
+	pop ecx
+	pop edi
+	pop ebp
+	ret				; 函数结束，返回
+; memset 结束
+

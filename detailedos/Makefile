@@ -11,13 +11,13 @@ CC		= gcc
 LD		= ld
 ASMBFLAGS	= -I boot/include/
 ASMKFLAGS	= -f elf -I include/
-CFLAGS	= -c -Wall -I include/
+CFLAGS	= -c -Wall -I include/  -fno-builtin
 LDFLAGS	= -s -Ttext $(ENTRYPOINT) -Map kernel.map
 
 # This Program
 ORANGESBOOT		= boot/boot.bin boot/loader.bin
 ORANGESKERNEL	= kernel/kernel.elf
-OBJS			= kernel/kernel.o kernel/start.o kernel/i8259.o kernel/global.o kernel/protect.o \
+OBJS			= kernel/kernel.o kernel/start.o kernel/i8259.o kernel/global.o kernel/protect.o kernel/main.o \
 			  lib/string.o lib/kliba.o lib/klib.o
 # All Phony Targets
 .PHONY : everything final image clean realclean disasm all buildimg
@@ -47,6 +47,8 @@ kernel/kernel.o : kernel/kernel.asm
 $(ORANGESKERNEL) : $(OBJS)
 	$(LD) $(LDFLAGS) -o $(ORANGESKERNEL) $^
 kernel/start.o : kernel/start.c
+	$(CC) $(CFLAGS) -o $@ $<
+kernel/main.o : kernel/main.c
 	$(CC) $(CFLAGS) -o $@ $<
 kernel/i8259.o : kernel/i8259.c
 	$(CC) $(CFLAGS) -o $@ $<
