@@ -9,6 +9,7 @@ extern	cstart
 extern	exception_handler
 extern	spurious_irq
 extern 	kernel_main
+extern	disp_str
 
 ; 导入全局变量
 extern	gdt_ptr
@@ -18,6 +19,9 @@ extern	p_proc_ready
 extern	tss
 
 bits 32
+
+[SECTION .data]
+clock_int_msg		db	"^", 0
 
 [SECTION .bss]
 StackSpace		resb	2 * 1024
@@ -120,13 +124,44 @@ csinit:
 
 ALIGN   16
 hwint00:                ; Interrupt routine for irq 0 (the clock).
+	  sub esp,4
+        pushad
+	  push ds
+	  push es
+	  push fs
+	  push gs
+
+	  mov dx,ss
+	  mov ds,dx
+	  mov es,dx
+
+	  mov esp,StackTop	;切换到内核栈
+
 	  cmp byte [gs:0],'Z'
 	  jna .rebak
 	  mov byte [gs:0],'A'-1
 .rebak:
 	  inc byte [gs:0] ;A->Z->A
-	  mov al,EOI
-	  out INT_M_CTL,al     
+
+	  mov al,EOI		;这两句保证我们的时钟中断可以
+	  out INT_M_CTL,al  	;连续执行，而不是像原来显示中只显示一次   
+
+	  push  clock_int_msg
+	  call  disp_str
+	  add	  esp, 4
+
+	  mov esp,[p_proc_ready]	;离开内核栈
+
+	  lea eax,[esp+P_STACKTOP]
+	  mov dword [tss+TSS3_S_SP0],eax
+
+	  pop gs
+	  pop fs
+	  pop es
+	  pop ds
+	  popad
+	  add esp,4
+
 	  iretd
 
 ALIGN   16
