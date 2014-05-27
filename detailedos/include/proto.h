@@ -27,4 +27,7 @@ void restart();
 /* main.c */
 PUBLIC int kernel_main();
 void TestA();
+void TestB();
+/* clock.c */
+PUBLIC void clock_handler(int irq);
 #endif

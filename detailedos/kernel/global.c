@@ -7,6 +7,7 @@
 #include "const.h"
 #include "protect.h"
 #include "proc.h"
+#include "proto.h"
 
 int		disp_pos;
 u8		  gdt_ptr[6];	/* 0~15:Limit  16~47:Base */
@@ -18,3 +19,5 @@ char		task_stack[STACK_SIZE_TOTAL];
 TSS		  tss;
 PROCESS*	  p_proc_ready;
 int 		k_reenter;
+TASK		  task_table[NR_TASKS] = {{TestA,STACK_SIZE_TESTA,"TestA"},
+					{TestB,STACK_SIZE_TESTB,"TestB"}};

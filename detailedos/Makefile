@@ -17,7 +17,7 @@ LDFLAGS	= -s -Ttext $(ENTRYPOINT) -Map kernel.map
 # This Program
 ORANGESBOOT		= boot/boot.bin boot/loader.bin
 ORANGESKERNEL	= kernel/kernel.elf
-OBJS			= kernel/kernel.o kernel/start.o kernel/i8259.o kernel/global.o kernel/protect.o kernel/main.o \
+OBJS			= kernel/kernel.o kernel/start.o kernel/i8259.o kernel/global.o kernel/protect.o kernel/main.o  kernel/clock.o \
 			  lib/string.o lib/kliba.o lib/klib.o
 # All Phony Targets
 .PHONY : everything final image clean realclean disasm all buildimg
@@ -51,6 +51,8 @@ kernel/start.o : kernel/start.c
 kernel/main.o : kernel/main.c
 	$(CC) $(CFLAGS) -o $@ $<
 kernel/i8259.o : kernel/i8259.c
+	$(CC) $(CFLAGS) -o $@ $<
+kernel/clock.o : kernel/clock.c
 	$(CC) $(CFLAGS) -o $@ $<
 kernel/global.o : kernel/global.c
 	$(CC) $(CFLAGS) -o $@ $<

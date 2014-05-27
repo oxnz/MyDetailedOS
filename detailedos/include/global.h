@@ -19,5 +19,6 @@ extern PROCESS	proc_table[];
 extern char		task_stack[];
 extern TSS		tss;
 extern PROCESS*	p_proc_ready;
+extern  TASK		task_table[];
 
 #endif
